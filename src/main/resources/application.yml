@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: preptrack
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/preptrack_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Asia/Kolkata
+
+jwt:
+  secret: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+  expiration: 86400000
+
+async:
+  core-pool-size: 2
+  max-pool-size: 5
+  queue-capacity: 100
+
+logging:
+  level:
+    com.preptrack: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
