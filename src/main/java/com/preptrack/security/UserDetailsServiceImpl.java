@@ -7,7 +7,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
 
 // Spring Security calls this whenever it needs to load a user by username (email in our case)
 // This bridges our User entity with Spring Security's UserDetails contract
@@ -22,12 +24,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         com.preptrack.domain.User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        // Build a Spring Security UserDetails from our domain User
-        // Collections.emptyList() — no roles/authorities for now (can extend later)
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .authorities(Collections.emptyList())
+                // SimpleGrantedAuthority wraps a string role — Spring Security requires at least one
+                .authorities(List.of(new SimpleGrantedAuthority("ROLE_USER")))
                 .build();
     }
 }

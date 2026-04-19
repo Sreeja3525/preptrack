@@ -10,21 +10,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.CompletableFuture;
-
 @RestController
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
-@Tag(name = "Reports", description = "Async weekly progress reports")
+@Tag(name = "Reports", description = "Weekly progress reports with parallel CompletableFuture queries")
 public class ReportController {
 
     private final ReportService reportService;
 
     @GetMapping("/weekly")
-    @Operation(summary = "Generate weekly report (async — fetches study logs and applications in parallel)")
-    public CompletableFuture<ResponseEntity<ApiResponse<WeeklyReportResponse>>> getWeeklyReport() {
+    @Operation(summary = "Generate weekly report — runs study log and application queries in parallel via CompletableFuture")
+    public ResponseEntity<ApiResponse<WeeklyReportResponse>> getWeeklyReport() {
         Long userId = SecurityUtil.getCurrentUserId();
-        return reportService.generateWeeklyReport(userId)
-                .thenApply(report -> ResponseEntity.ok(ApiResponse.success(report)));
+        WeeklyReportResponse report = reportService.generateWeeklyReport(userId);
+        return ResponseEntity.ok(ApiResponse.success(report));
     }
 }
